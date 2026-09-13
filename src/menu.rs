@@ -1,19 +1,12 @@
 pub struct Menu {
-    options: Vec<MenuOptions>,
+    //0 = Configs, 1 = start timer, 2 = new config
     selected_option: usize
-}
-
-pub enum MenuOptions {
-    StartTimer,
-    ViewConfigs,
-    NewConfig
 }
 
 impl Menu {
     pub fn new() -> Menu {
         Self {
-            options: Vec::new(),
-            selected_option: 0
+            selected_option: 1
         }
     }
     pub fn choose_next_option(&mut self) {

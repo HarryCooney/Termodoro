@@ -12,6 +12,8 @@ impl<'a> App<'a> {
         }
         Ok(())
     }
+    //TODO
+    //Add handling for CTRL events
 
     fn handle_key_events(&mut self, key_event: &KeyEvent) {
         match self.state {
@@ -26,11 +28,28 @@ impl<'a> App<'a> {
     fn handle_menu_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
+            KeyCode::Char('h') => self.menu.choose_previous_option(),
+            KeyCode::Char('l') => self.menu.choose_next_option(),
+            KeyCode::Enter => self.enter_on_menu(),
             _ => {}
         }
     }
     fn handle_config_selection_events(&mut self, key_event: &KeyEvent) {}
     fn handle_return_to_menu_popup_events(&mut self, key_event: &KeyEvent) {}
     fn handle_new_config_events(&mut self, key_event: &KeyEvent) {}
-    fn handle_pomodoro_events(&mut self, key_event: &KeyEvent) {}
+    fn handle_pomodoro_events(&mut self, key_event: &KeyEvent) {
+        match key_event.code {
+            KeyCode::Char('q') => self.quit(),
+            _ => {}
+        }
+    }
+
+    fn enter_on_menu(&mut self) {
+        match self.menu.selected() {
+            0 => {},
+            1 => self.set_state(AppState::PomodoroState),
+            2 => {},
+            _ => {}
+        }
+    }
 }

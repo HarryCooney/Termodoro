@@ -4,15 +4,16 @@ use crate::pomodoro::Pomodoro;
 use crate::menu::Menu;
 use crate::config::Config;
 use crate::config_menu::Config_Menu;
+use crate::clock::Clock;
 
 pub struct App<'a> {
     running: bool,
     pub state: AppState,
     config: Option<Config>,
     pomodoro: Pomodoro<'a>,
-    menu: Menu,
+    pub menu: Menu,
     config_menu: Config_Menu,
-    clock: usize
+    clock: Clock
 }
 
 pub enum AppState {
@@ -32,7 +33,7 @@ impl<'a> App<'a> {
             pomodoro: Pomodoro::new(),
             menu: Menu::new(),
             config_menu: Config_Menu::new(),
-            clock: 0
+            clock: Clock::new()
         }
     }
 
@@ -45,7 +46,7 @@ impl<'a> App<'a> {
         Ok(())
     }
 
-    fn change_state(&mut self, state: AppState) {
+    pub fn set_state(&mut self, state: AppState) {
         self.state = state;
     }
 
@@ -59,9 +60,9 @@ impl<'a> App<'a> {
 
     fn confirm_menu_choice(&mut self) {
         match self.menu.selected() {
-            0 => self.change_state(AppState::PomodoroState),
-            1 => self.change_state(AppState::ConfigSelection),
-            2 => self.change_state(AppState::NewConfig),
+            0 => self.set_state(AppState::PomodoroState),
+            1 => self.set_state(AppState::ConfigSelection),
+            2 => self.set_state(AppState::NewConfig),
             _ => {}
         }
     }

@@ -1,8 +1,9 @@
 use crate::config::Config;
+use std::time::*;
 
 pub struct Pomodoro<'a> {
     config: Option<&'a Config>,
-    timer: f64,
+    timer: Duration,
     cyclesRemaining: usize,
     state: PomodoroState,
     paused: bool
@@ -17,10 +18,14 @@ impl<'a> Pomodoro<'a> {
     pub fn new() -> Pomodoro<'a> {
         Self {
             config: None,
-            timer: 0.0,
+            timer: Duration::new(0, 0),
             cyclesRemaining: 0,
             state: PomodoroState::working,
             paused: true
         }
+    }
+
+    pub fn load_config(&mut self, config: &Config) {
+        self.config = Some(config);
     }
 }
