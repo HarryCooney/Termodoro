@@ -43,14 +43,14 @@ impl App {
         let text1 = Paragraph::new("").block(block1);
         self.render_timer(timer_layout[2], buf);
         let text3 = Paragraph::new("■ ■ □").centered().block(block3);
-        self.timer_work_icon(timer_layout[0], buf);
+        self.timer_work_animation_frame_three_icon(timer_layout[0], buf);
         text1.render(timer_layout[1], buf);
         text3.render(timer_layout[3], buf);
     }
 
     fn render_timer(&self, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
-        let clock_text = self.pomodoro.to_string();
+        let clock_text = self.clock.tick.to_string();
         let clock = Paragraph::new(clock_text).centered().block(block);
         clock.render(area, buf);
     }

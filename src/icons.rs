@@ -120,6 +120,187 @@ impl App {
         icon.render(area, buf);
     }
 
+    pub fn timer_work_animation_frame_one_icon(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::bordered();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 40.0])
+            .y_bounds([0.0, 14.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                //Edges of right page
+                ctx.draw(&Line::new(30.0, 3.0, 34.0, 9.5, Color::White));
+                ctx.draw(&Line::new(31.0, 2.5, 35.0, 10.0, Color::White));
+
+                //Bottom of right page
+                ctx.draw(&Line::new(30.0, 3.0, 29.0, 3.0, Color::White));
+                ctx.draw(&Line::new(29.0, 3.5, 21.0, 3.5, Color::White));
+                ctx.draw(&Line::new(20.0, 3.0, 18.5, 3.0, Color::White));
+
+                //Top of right page
+                ctx.draw(&Line::new(32.5, 10.0, 34.0, 10.0, Color::White));
+                //ctx.draw(&Line::new(32.0, 10.5, 24.0, 10.5, Color::White));
+                //ctx.draw(&Line::new(24.0, 10.0, 22.5, 10.0, Color::White));
+
+                //Edges of left page
+                ctx.draw(&Line::new(18.5, 3.0, 22.5, 10.0, Color::White));
+                ctx.draw(&Line::new(8.0, 3.1, 12.0, 9.9, Color::White));
+
+                //Top of left page
+                ctx.draw(&Line::new(12.0, 9.9, 13.0, 9.9, Color::White));
+                ctx.draw(&Line::new(13.5, 10.5, 19.5, 10.5, Color::White));
+                ctx.draw(&Line::new(20.0, 9.9, 21.0, 9.9, Color::White));
+
+                //Bottom of left page
+                ctx.draw(&Line::new(8.0, 3.1, 9.5, 3.1, Color::White));
+                ctx.draw(&Line::new(10.0, 3.5, 16.5, 3.5, Color::White));
+
+                //Book Cover
+                ctx.draw(&Line::new(22.0, 2.5, 28.0, 2.5, Color::White));
+                ctx.draw(&Line::new(10.5, 2.5, 17.5, 2.5, Color::White));
+
+                //Left Page
+                ctx.draw(&Line::new(13.0, 8.5, 18.0, 8.5, Color::White));
+                ctx.draw(&Line::new(12.5, 7.5, 17.5, 7.5, Color::White));
+                ctx.draw(&Line::new(12.0, 6.0, 16.0, 6.0, Color::White));
+
+                //Top Edge of Flipped Page
+                ctx.draw(&Line::new(21.7, 10.0, 24.7, 11.5, Color::White));
+                ctx.draw(&Line::new(24.7, 11.5, 31.5, 12.2, Color::White));
+
+                //Bottom Edge of Flipped Page
+                ctx.draw(&Line::new(18.7, 4.0, 21.7, 5.5, Color::White));
+                ctx.draw(&Line::new(21.7, 5.5, 28.5, 6.0, Color::White));
+
+
+                //Right Edge of flipped page
+                ctx.draw(&Line::new(28.2, 5.7, 31.5, 11.7, Color::White));
+            });
+        icon.render(area, buf);
+    }
+    pub fn timer_work_animation_frame_two_icon(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::bordered();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 40.0])
+            .y_bounds([0.0, 14.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                //Edges of right page
+                ctx.draw(&Line::new(30.0, 3.0, 34.0, 9.5, Color::White));
+                ctx.draw(&Line::new(31.0, 2.5, 35.0, 10.0, Color::White));
+
+                //Bottom of right page
+                ctx.draw(&Line::new(30.0, 3.0, 29.0, 3.0, Color::White));
+                ctx.draw(&Line::new(29.0, 3.5, 21.0, 3.5, Color::White));
+                ctx.draw(&Line::new(20.0, 3.0, 18.5, 3.0, Color::White));
+
+                //Top of right page
+                ctx.draw(&Line::new(32.5, 10.0, 34.0, 10.0, Color::White));
+                ctx.draw(&Line::new(32.0, 10.5, 25.0, 10.5, Color::White));
+
+                //Edges of left page
+                ctx.draw(&Line::new(18.5, 3.0, 22.5, 10.0, Color::White));
+                ctx.draw(&Line::new(8.0, 3.1, 12.0, 9.9, Color::White));
+
+                //Top of left page
+                ctx.draw(&Line::new(12.0, 9.9, 13.0, 9.9, Color::White));
+                ctx.draw(&Line::new(13.5, 10.5, 19.5, 10.5, Color::White));
+                ctx.draw(&Line::new(20.0, 9.9, 21.0, 9.9, Color::White));
+
+                //Bottom of left page
+                ctx.draw(&Line::new(8.0, 3.1, 9.5, 3.1, Color::White));
+                ctx.draw(&Line::new(10.0, 3.5, 16.5, 3.5, Color::White));
+
+                //Book Cover
+                ctx.draw(&Line::new(22.0, 2.5, 28.0, 2.5, Color::White));
+                ctx.draw(&Line::new(10.5, 2.5, 17.5, 2.5, Color::White));
+
+                //Left Page
+                ctx.draw(&Line::new(13.0, 8.5, 18.0, 8.5, Color::White));
+                ctx.draw(&Line::new(12.5, 7.5, 17.5, 7.5, Color::White));
+                ctx.draw(&Line::new(12.0, 6.0, 16.0, 6.0, Color::White));
+
+                //Right Page
+                ctx.draw(&Line::new(24.0, 8.5, 30.0, 8.5, Color::White));
+                ctx.draw(&Line::new(23.5, 7.5, 29.5, 7.5, Color::White));
+                ctx.draw(&Line::new(23.0, 6.8, 28.5, 6.8, Color::White));
+                ctx.draw(&Line::new(22.2, 5.2, 27.2, 5.2, Color::White));
+                
+                //Flipped Page Top Edge
+                ctx.draw(&Line::new(22.0, 10.0, 23.5, 12.0, Color::White));
+                ctx.draw(&Line::new(23.5, 12.0, 24.5, 12.5, Color::White));
+
+                //Left edge of fhipped page
+                ctx.draw(&Line::new(25.0, 12.5, 22.0, 6.0, Color::White));
+
+                //Bottom Edge of flipped page
+                ctx.draw(&Line::new(19.0, 3.0, 19.5, 5.0, Color::White));
+                ctx.draw(&Line::new(20.5, 5.0, 21.5, 5.5, Color::White));
+
+
+            });
+        icon.render(area, buf);
+    }
+
+    pub fn timer_work_animation_frame_three_icon(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::bordered();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 40.0])
+            .y_bounds([0.0, 14.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                //Edges of right page
+                ctx.draw(&Line::new(30.0, 3.0, 34.0, 9.5, Color::White));
+                ctx.draw(&Line::new(31.0, 2.5, 35.0, 10.0, Color::White));
+
+                //Bottom of right page
+                ctx.draw(&Line::new(30.0, 3.0, 29.0, 3.0, Color::White));
+                ctx.draw(&Line::new(29.0, 3.5, 21.0, 3.5, Color::White));
+                ctx.draw(&Line::new(20.0, 3.0, 18.5, 3.0, Color::White));
+
+                //Top of right page
+                ctx.draw(&Line::new(32.5, 10.0, 34.0, 10.0, Color::White));
+                ctx.draw(&Line::new(32.0, 10.5, 24.0, 10.5, Color::White));
+                ctx.draw(&Line::new(24.0, 10.0, 22.5, 10.0, Color::White));
+
+                //Edges of left page
+                ctx.draw(&Line::new(18.5, 3.0, 22.5, 10.0, Color::White));
+                ctx.draw(&Line::new(8.0, 3.1, 12.0, 9.9, Color::White));
+
+                //Top of left page
+                ctx.draw(&Line::new(12.0, 9.9, 13.0, 9.9, Color::White));
+
+                //Bottom of left page
+                ctx.draw(&Line::new(8.0, 3.1, 9.5, 3.1, Color::White));
+                ctx.draw(&Line::new(10.0, 3.5, 16.5, 3.5, Color::White));
+
+                //Book Cover
+                ctx.draw(&Line::new(22.0, 2.5, 28.0, 2.5, Color::White));
+                ctx.draw(&Line::new(10.5, 2.5, 17.5, 2.5, Color::White));
+
+                //Right Page
+                ctx.draw(&Line::new(24.0, 8.5, 30.0, 8.5, Color::White));
+                ctx.draw(&Line::new(23.5, 7.5, 29.5, 7.5, Color::White));
+                ctx.draw(&Line::new(23.0, 6.8, 28.5, 6.8, Color::White));
+                ctx.draw(&Line::new(22.2, 5.2, 27.2, 5.2, Color::White));
+
+                //Top Edge of Flipped Page
+                ctx.draw(&Line::new(18.0, 11.0, 21.0, 9.9, Color::White));
+                ctx.draw(&Line::new(14.0, 11.6, 18.0, 11.0, Color::White));
+
+                //Side of Flipped Page
+                ctx.draw(&Line::new(10.1, 5.0, 14.2, 11.5, Color::White));
+
+                //Top Edge of Flipped Page
+                ctx.draw(&Line::new(10.0, 5.0, 13.0, 4.6, Color::White));
+                ctx.draw(&Line::new(13.5, 4.6, 17.5, 4.0, Color::White));
+
+            });
+        icon.render(area, buf);
+    }
+
     pub fn render_icon(&self, icon: MenuIcon, colors: &Vec<Color>, area: Rect, buf: &mut Buffer) {
         let icon_layout = Layout::vertical([
             Constraint::Fill(1),
