@@ -1,8 +1,9 @@
 use color_eyre::Result;
+use crate::config::Config;
 use crossterm::event::{self, Event, KeyEvent, KeyEventKind, KeyCode};
 use crate::app::{App, AppState};
 
-impl<'a> App<'a> {
+impl App {
     pub fn handle_events(&mut self) -> Result<()> {
         match event::read()? {
             Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
@@ -47,7 +48,12 @@ impl<'a> App<'a> {
     fn enter_on_menu(&mut self) {
         match self.menu.selected() {
             0 => {},
-            1 => self.set_state(AppState::PomodoroState),
+            1 => {
+                self.set_state(AppState::PomodoroState);
+                if let Some(config) = self.config {
+                    self.pomodoro.load_config(config);
+                }
+            },
             2 => {},
             _ => {}
         }

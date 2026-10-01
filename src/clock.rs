@@ -12,15 +12,19 @@ impl Clock {
     }
 
     pub fn update_clock(&mut self) {
-        self.timer = SystemTime::now().duration_size(SystemTime::UNIX_EPOCH)
+        self.timer = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH)
             .expect("FATAL ERROR: Could not get system time");
     }
     
-    fn current_time() {
-        SystemTime::now().curation_size(SystemTime::UNIX_EPOCH)
-            .expect("FATAL ERROR: Could not get system time");
+    fn current_time() -> Duration {
+        SystemTime::now().duration_since(SystemTime::UNIX_EPOCH)
+            .expect("FATAL ERROR: Could not get system time")
     }
 
     pub fn delta_time(&self) -> Duration {
-        current_time() - self.timer
+        if let Some(delta_time) = Clock::current_time().checked_sub(self.timer) {
+            return delta_time;
+        }
+        Duration::new(0, 0)
+    }
 }

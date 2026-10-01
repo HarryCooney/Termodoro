@@ -1,4 +1,5 @@
 use std::time::*;
+#[derive(Copy, Clone)]
 pub struct Config {
     pub work: Duration,
     pub rest: Duration,
@@ -14,3 +15,24 @@ impl Config {
         }
     }
 }
+
+impl Default for Config {
+    fn default() -> Config {
+        Self {
+            work: Duration::new(50, 0),
+            rest: Duration::new(50, 0),
+            cycles: 3
+        }
+    }
+}
+/*
+impl Clone for Config {
+    fn clone(&self) -> Self {
+        Config {
+            work: self.work,
+            rest: self.rest,
+            cycles: self.cycles
+        }
+    }
+}
+*/

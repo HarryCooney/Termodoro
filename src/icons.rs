@@ -12,7 +12,7 @@ pub enum MenuIcon {
     Configs,
     NewConfig
 }
-impl App<'_> {
+impl App {
     pub fn menu_icon_apple(&self, color: Color, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
         let canvas = Canvas::default()
@@ -23,8 +23,8 @@ impl App<'_> {
             .paint(|ctx| {
                 ctx.draw(&FilledLine::new(5.0, 3.1, 18.0, 3.0, 7.5, color));
                 ctx.draw(&FilledLine::new(7.0, 2.5, 16.0, 2.5, 8.5, color));
-                ctx.draw(&Line::new(12.0, 7.5, 12.0, 10.0, color));
-                ctx.draw(&Line::new(10.0, 10.5, 10.0, 10.5, color));
+                ctx.draw(&Line::new(12.0, 7.5, 11.7, 10.0, color));
+                ctx.draw(&Line::new(10.5, 10.5, 10.5, 10.5, color));
             });
         canvas.render(area, buf);
     }

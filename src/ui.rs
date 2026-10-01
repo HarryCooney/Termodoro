@@ -13,7 +13,7 @@ use crate::icons::MenuIcon;
 
 
 
-impl App<'_> {
+impl App {
     //TODO
     //Add menu rendering
     pub fn render(&mut self, frame: &mut Frame) {
@@ -28,7 +28,7 @@ impl App<'_> {
         self.render_icon(MenuIcon::NewConfig, &colors, icon_areas[2], buf);
     }
 
-    fn render_timer(&self, area: Rect, buf: &mut Buffer) {
+    fn render_timer_widget(&self, area: Rect, buf: &mut Buffer) {
         let timer_rect = App::timer_area(area);
         let timer_layout = Layout::default()
             .direction(Direction::Vertical)
@@ -38,17 +38,21 @@ impl App<'_> {
                 Constraint::Length(1),  //Blank space
                 Constraint::Length(1)   //Cycles
             ]).split(timer_rect);
-        let block0 = Block::bordered();
         let block1 = Block::new();
-        let block2 = Block::new();
         let block3 = Block::new();
         let text1 = Paragraph::new("").block(block1);
-        let text2 = Paragraph::new("10:42").centered().block(block2);
+        self.render_timer(timer_layout[2], buf);
         let text3 = Paragraph::new("■ ■ □").centered().block(block3);
         self.timer_work_icon(timer_layout[0], buf);
         text1.render(timer_layout[1], buf);
-        text2.render(timer_layout[2], buf);
         text3.render(timer_layout[3], buf);
+    }
+
+    fn render_timer(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::new();
+        let clock_text = self.pomodoro.to_string();
+        let clock = Paragraph::new(clock_text).centered().block(block);
+        clock.render(area, buf);
     }
 
     fn split_area_in_thirds_flex(area: Rect) -> Rc<[Rect]> {
@@ -84,11 +88,11 @@ impl App<'_> {
         ]).split(widget_size)[1]
     }
 }
-impl Widget for &mut App<'_>{
+impl Widget for &mut App{
     fn render(self, area: Rect, buf: &mut Buffer) {
         match self.state {
             AppState::Menu => self.render_menu(area, buf),
-            AppState::PomodoroState => self.render_timer(area, buf),
+            AppState::PomodoroState => self.render_timer_widget(area, buf),
             AppState::ConfigSelection => {},
             AppState::NewConfig => {},
             AppState:: ConfirmReturnToMenu => {}
