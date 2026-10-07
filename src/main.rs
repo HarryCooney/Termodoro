@@ -1,5 +1,6 @@
 use color_eyre::Result;
 mod clock;
+mod animation;
 mod app;
 mod menu;
 mod config;

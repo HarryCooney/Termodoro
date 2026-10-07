@@ -7,6 +7,7 @@ use crate::menu::Menu;
 use crate::config::Config;
 use crate::config_menu::Config_Menu;
 use crate::clock::Clock;
+use crate::animation::Animation;
 
 pub struct App {
     running: bool,
@@ -16,7 +17,8 @@ pub struct App {
     pub menu: Menu,
     pub config_menu: Config_Menu,
     pub clock: Clock,
-    pub i: usize
+    pub i: usize,
+    pub animations: Vec<Animation>
 }
 
 pub enum AppState {
@@ -37,7 +39,8 @@ impl App {
             menu: Menu::new(),
             config_menu: Config_Menu::new(),
             clock: Clock::new(),
-            i: 0
+            i: 0,
+            animations: Animation::default_animations()
         }
     }
     
@@ -65,6 +68,7 @@ impl App {
     fn clock_events(&mut self) {
         self.pomodoro.update_pomodoro_timer(&self.clock.delta_time());
         self.clock.update_clock();
+        self.handle_animations(self.clock.tick);
     }
 
     pub fn quit(&mut self) {
@@ -81,6 +85,17 @@ impl App {
             1 => self.set_state(AppState::ConfigSelection),
             2 => self.set_state(AppState::NewConfig),
             _ => {}
+        }
+    }
+
+    fn handle_animations(&mut self, new_frame_tick: usize) {
+        if self.clock.tick % 50 == 0 {
+            self.animations[0].running = true
+        }
+        for animation in &mut self.animations {
+            if animation.is_running() {
+                animation.next_frame(self.clock.timer);
+            }
         }
     }
 }

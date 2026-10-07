@@ -2,13 +2,13 @@ use ratatui::widgets::{Widget, StatefulWidget, Block,
     Paragraph, List, ListItem, Wrap, Padding};
 use ratatui::layout::{Layout, Rect, Constraint, Direction, Alignment, Flex};
 use std::rc::Rc;
-use ratatui::widgets::canvas::{Canvas, Line, Rectangle, FilledLine, Context};
 use ratatui::symbols::*;
 use ratatui::buffer::Buffer;
 use ratatui::Frame;
 use ratatui::style::{Color, Stylize};
 use crate::app::{App, AppState};
 use crate::icons::*;
+use crate::clock::Clock;
 use crate::icons::MenuIcon;
 
 
@@ -43,7 +43,7 @@ impl App {
         let text1 = Paragraph::new("").block(block1);
         self.render_timer(timer_layout[2], buf);
         let text3 = Paragraph::new("■ ■ □").centered().block(block3);
-        self.timer_work_animation_frame_three_icon(timer_layout[0], buf);
+        self.handle_timer_icon(timer_layout[0], buf);
         text1.render(timer_layout[1], buf);
         text3.render(timer_layout[3], buf);
     }
@@ -86,6 +86,26 @@ impl App {
             Constraint::Length(24),
             Constraint::Fill(1)
         ]).split(widget_size)[1]
+    }
+
+    fn handle_timer_icon(&self, area: Rect, buf: &mut Buffer) {
+        if self.animations[0].is_running() {
+            self.render_timer_animation(area, buf);
+        } else {
+            self.timer_work_icon(area, buf);
+        }
+    }
+
+    fn render_timer_animation(&self, area: Rect, buf: &mut Buffer) {
+        match self.animations[0].current_frame {
+            0 => self.timer_work_animation_frame_one_icon(area, buf),
+            1 => self.timer_work_animation_frame_one_icon(area, buf),
+            2 => self.timer_work_animation_frame_two_icon(area, buf),
+            3 => self.timer_work_animation_frame_two_icon(area, buf),
+            4 => self.timer_work_animation_frame_three_icon(area, buf),
+            5 => self.timer_work_animation_frame_three_icon(area, buf),
+            _ => self.timer_work_icon(area, buf)
+        }
     }
 }
 impl Widget for &mut App{

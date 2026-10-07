@@ -67,7 +67,7 @@ impl App {
         icon.render(area, buf);
     }
     pub fn timer_work_icon(&self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered();
+        let block = Block::new();
         let icon = Canvas::default()
             .x_bounds([0.0, 40.0])
             .y_bounds([0.0, 14.0])
@@ -121,7 +121,7 @@ impl App {
     }
 
     pub fn timer_work_animation_frame_one_icon(&self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered();
+        let block = Block::new();
         let icon = Canvas::default()
             .x_bounds([0.0, 40.0])
             .y_bounds([0.0, 14.0])
@@ -179,7 +179,7 @@ impl App {
         icon.render(area, buf);
     }
     pub fn timer_work_animation_frame_two_icon(&self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered();
+        let block = Block::new();
         let icon = Canvas::default()
             .x_bounds([0.0, 40.0])
             .y_bounds([0.0, 14.0])
@@ -244,7 +244,7 @@ impl App {
     }
 
     pub fn timer_work_animation_frame_three_icon(&self, area: Rect, buf: &mut Buffer) {
-        let block = Block::bordered();
+        let block = Block::new();
         let icon = Canvas::default()
             .x_bounds([0.0, 40.0])
             .y_bounds([0.0, 14.0])

@@ -1,6 +1,6 @@
 use std::time::*;
 pub struct Clock {
-    timer: Duration,
+    pub timer: Duration,
     pub tick: usize, //Clock tick is 20 TPS
     pub tick_elapse: Duration
 
@@ -23,7 +23,7 @@ impl Clock {
             .expect("FATAL ERROR: Could not get system time");
         if self.timer.as_nanos() - self.tick_elapse.as_nanos() > 100_000_000 {
             self.tick_elapse = self.timer;
-            self.tick = (self.tick + 1) % 20;
+            self.tick += 1;
         }
         
     }
