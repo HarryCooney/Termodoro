@@ -40,9 +40,10 @@ impl App {
             ]).split(timer_rect);
         let block1 = Block::new();
         let block3 = Block::new();
-        let text1 = Paragraph::new("").block(block1);
-        self.render_timer(timer_layout[2], buf);
-        let text3 = Paragraph::new("■ ■ □").centered().block(block3);
+        let text1 = Paragraph::new("").centered().block(block1);
+        self.render_timer(timer_layout[1], buf);
+        //println!("{}", self.pomodoro.cycle_string_cache);
+        let text3 = Paragraph::new(self.pomodoro.cycle_string_cache.as_str()).centered().block(block3);
         self.handle_timer_icon(timer_layout[0], buf);
         text1.render(timer_layout[1], buf);
         text3.render(timer_layout[3], buf);
@@ -50,7 +51,7 @@ impl App {
 
     fn render_timer(&self, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
-        let clock_text = self.clock.tick.to_string();
+        let clock_text = self.pomodoro.time_remaining_to_string();
         let clock = Paragraph::new(clock_text).centered().block(block);
         clock.render(area, buf);
     }

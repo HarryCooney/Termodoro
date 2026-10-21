@@ -2,6 +2,7 @@ use ratatui::DefaultTerminal;
 use color_eyre::Result;
 use crossterm::event::{self, poll, read};
 use std::time::Duration;
+use std::thread::sleep;
 use crate::pomodoro::Pomodoro;
 use crate::menu::Menu;
 use crate::config::Config;
@@ -19,6 +20,7 @@ pub struct App {
     pub clock: Clock,
     pub i: usize,
     pub animations: Vec<Animation>
+
 }
 
 pub enum AppState {
@@ -57,6 +59,10 @@ impl App {
             terminal.draw(|frame| self.render(frame))?;
             self.read_events()?;
             self.clock_events();
+
+            //TODO Find a better way to limit framerate to stop performance from tanking
+            //This is a plaster on a gaping wound.
+            sleep(Duration::from_millis(17));
         }
         Ok(())
     }
@@ -68,7 +74,7 @@ impl App {
     fn clock_events(&mut self) {
         self.pomodoro.update_pomodoro_timer(&self.clock.delta_time());
         self.clock.update_clock();
-        self.handle_animations(self.clock.tick);
+        self.handle_animations();
     }
 
     pub fn quit(&mut self) {
@@ -88,8 +94,8 @@ impl App {
         }
     }
 
-    fn handle_animations(&mut self, new_frame_tick: usize) {
-        if self.clock.tick % 50 == 0 {
+    fn handle_animations(&mut self) {
+        if self.clock.tick % 300 == 0 {
             self.animations[0].running = true
         }
         for animation in &mut self.animations {
@@ -97,5 +103,8 @@ impl App {
                 animation.next_frame(self.clock.timer);
             }
         }
+    }
+
+    fn complete_cycle(&mut self) {
     }
 }

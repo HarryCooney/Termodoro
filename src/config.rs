@@ -19,8 +19,8 @@ impl Config {
 impl Default for Config {
     fn default() -> Config {
         Self {
-            work: Duration::new(50, 0),
-            rest: Duration::new(50, 0),
+            work: Duration::new(5, 0),
+            rest: Duration::new(5, 0),
             cycles: 3
         }
     }
