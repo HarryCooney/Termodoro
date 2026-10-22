@@ -7,6 +7,7 @@ pub struct Pomodoro {
     timer: Duration,
     cyclesRemaining: usize,
     state: PomodoroState,
+    cyclesDisplayMode: CyclesDisplayMode,
     paused: bool,
     pub cycle_string_cache: String
 }
@@ -17,6 +18,11 @@ enum PomodoroState {
     Done
 }
 
+enum CyclesDisplayMode {
+    Blocks,
+    Fraction
+}
+
 impl Pomodoro {
     pub fn new() -> Pomodoro {
         Self {
@@ -24,6 +30,7 @@ impl Pomodoro {
             timer: Duration::new(0, 0),
             cyclesRemaining: 0,
             state: PomodoroState::Working,
+            cyclesDisplayMode: CyclesDisplayMode::Blocks,
             paused: true,
             cycle_string_cache: String::new()
         }
@@ -34,6 +41,9 @@ impl Pomodoro {
         self.timer = config.work;
         self.cyclesRemaining = config.cycles;
         self.state = PomodoroState::Working;
+        if let Some(config) = self.config && config.cycles > 7 {
+                self.cyclesDisplayMode = CyclesDisplayMode::Fraction
+        }
         self.paused = false;
         self.update_cycles_string_cache();
     }
@@ -95,10 +105,17 @@ impl Pomodoro {
 
     //TODO: Test this for wayy more inputs
     pub fn update_cycles_string_cache(&mut self) {
+        match self.cyclesDisplayMode {
+            CyclesDisplayMode::Blocks => self.cycle_string_cache = self.cycles_block_format(),
+            CyclesDisplayMode::Fraction => self.cycle_string_cache = self.cycles_fraction_format()
+        }
+    }
+
+    fn cycles_block_format(&mut self) -> String {
         if let Some(config) = self.config {
-            let cycles_compeleted = config.cycles.saturating_sub(self.cyclesRemaining);
+            let cycles_completed = config.cycles.saturating_sub(self.cyclesRemaining);
             let mut sb = String::new();
-            for _ in 0..cycles_compeleted {
+            for _ in 0..cycles_completed {
                 sb.push_str("■ ");
             }
             if self.cyclesRemaining > 0 {
@@ -107,10 +124,19 @@ impl Pomodoro {
             for _ in 0..self.cyclesRemaining.saturating_sub(1) {
                 sb.push_str("□ ");
             }
-            return self.cycle_string_cache = sb.trim().to_string();
+            return sb.trim().to_string();
         }
 
-        self.cycle_string_cache = "".to_string()
+        "".to_string()
+    }
+
+    fn cycles_fraction_format(&mut self) -> String {
+        if let Some(config) = self.config {
+            let cycles_completed = config.cycles.saturating_sub(self.cyclesRemaining);
+            return format!("{} / {}", cycles_completed, config.cycles);
+        }
+
+        "".to_string()
     }
 
 }
