@@ -8,7 +8,8 @@ pub struct Animation {
 }
 
 enum AnimationType {
-    BookTurningPage
+    BookTurningPage,
+    CoffeeSteam
 }
 
 impl Animation {
@@ -18,14 +19,16 @@ impl Animation {
         self.frame_snapshot = time_snapshot;
     }
 
-    pub fn next_frame(&mut self, new_frame_snapshot: Duration) {
-        if new_frame_snapshot.as_nanos() - self.frame_snapshot.as_nanos() > 70_000_000 {
-            self.current_frame += 1;
-            self.frame_snapshot = new_frame_snapshot;
-        }
-        if self.current_frame >= self.frames {
-            self.current_frame = 0;
-            self.running = false
+    pub fn next_frame(&mut self, new_frame_snapshot: Duration, frame_duration: u128) {
+        if self.is_running() {
+            if new_frame_snapshot.as_nanos() - self.frame_snapshot.as_nanos() > frame_duration {
+                self.current_frame += 1;
+                self.frame_snapshot = new_frame_snapshot;
+            }
+            if self.current_frame >= self.frames {
+                self.current_frame = 0;
+                self.running = false
+            }
         }
     }
     
@@ -36,14 +39,20 @@ impl Animation {
                 running: false,
                 current_frame: 0,
                 frame_snapshot: Duration::new(0, 0)
+            },
+            AnimationType::CoffeeSteam => Self {
+                frames: 2,
+                running: false,
+                current_frame: 0,
+                frame_snapshot: Duration::new(0, 0)
             }
         }
     }
 
     pub fn default_animations() -> Vec<Animation> {
         vec![
-            Animation::new(AnimationType::BookTurningPage)
-            //menu icons animations
+            Animation::new(AnimationType::BookTurningPage),
+            Animation::new(AnimationType::CoffeeSteam)
         ]
     }
 

@@ -3,7 +3,7 @@ use color_eyre::Result;
 use crossterm::event::{self, poll, read};
 use std::time::Duration;
 use std::thread::sleep;
-use crate::pomodoro::Pomodoro;
+use crate::pomodoro::{Pomodoro, PomodoroState};
 use crate::menu::Menu;
 use crate::config::Config;
 use crate::config_menu::Config_Menu;
@@ -62,7 +62,7 @@ impl App {
 
             //TODO Find a better way to limit framerate to stop performance from tanking
             //This is a plaster on a gaping wound.
-            sleep(Duration::from_millis(17));
+            sleep(Duration::from_millis(34));
         }
         Ok(())
     }
@@ -95,16 +95,36 @@ impl App {
     }
 
     fn handle_animations(&mut self) {
-        if self.clock.tick % 300 == 0 {
-            self.animations[0].running = true
-        }
-        for animation in &mut self.animations {
-            if animation.is_running() {
-                animation.next_frame(self.clock.timer);
-            }
-        }
+        self.schedule_animations();
+        self.run_animations();
     }
 
     fn complete_cycle(&mut self) {
+    }
+
+    fn schedule_animations(&mut self) {
+        match self.state {
+            AppState::PomodoroState => self.schedule_pomodoro_animations(),
+            _ => {}
+        }
+    }
+
+    fn schedule_pomodoro_animations(&mut self) {
+        match self.pomodoro.state {
+            PomodoroState::Working => {
+                if self.clock.tick % 50 == 0 {
+                    self.animations[0].running = true;
+                }
+            },
+            PomodoroState::Resting => {
+                self.animations[1].running = true;
+            },
+            _ => {}
+        }
+    }
+
+    fn run_animations(&mut self) {
+        self.animations[0].next_frame(self.clock.timer, 70_000_000);
+        self.animations[1].next_frame(self.clock.timer, 2_000_000_000);
     }
 }

@@ -10,6 +10,7 @@ use crate::app::{App, AppState};
 use crate::icons::*;
 use crate::clock::Clock;
 use crate::icons::MenuIcon;
+use crate::pomodoro::PomodoroState;
 
 
 
@@ -90,14 +91,21 @@ impl App {
     }
 
     fn handle_timer_icon(&self, area: Rect, buf: &mut Buffer) {
-        if self.animations[0].is_running() {
-            self.render_timer_animation(area, buf);
-        } else {
-            self.timer_work_icon(area, buf);
+        match self.pomodoro.state {
+            PomodoroState::Working => {
+                if self.animations[0].is_running() {
+                    self.render_timer_animation(area, buf);
+                } else {
+                    self.timer_work_icon(area, buf);
+                }
+            },
+            PomodoroState::Resting => self.render_resing_animation(area, buf),
+            PomodoroState::Done => self.render_resing_animation(area, buf),
         }
     }
 
     fn render_timer_animation(&self, area: Rect, buf: &mut Buffer) {
+        //This could be wayy better but I have no clue how to use HOFs now.
         match self.animations[0].current_frame {
             0 => self.timer_work_animation_frame_one_icon(area, buf),
             1 => self.timer_work_animation_frame_one_icon(area, buf),
@@ -106,6 +114,13 @@ impl App {
             4 => self.timer_work_animation_frame_three_icon(area, buf),
             5 => self.timer_work_animation_frame_three_icon(area, buf),
             _ => self.timer_work_icon(area, buf)
+        }
+    }
+
+    fn render_resing_animation(&self, area: Rect, buf: &mut Buffer) {
+        match self.animations[1].current_frame {
+            0 => self.timer_break_icon_frame_two(area, buf),
+            _ => self.timer_break_icon_frame_one(area, buf)
         }
     }
 }

@@ -6,13 +6,13 @@ pub struct Pomodoro {
     config: Option<Config>,
     timer: Duration,
     cyclesRemaining: usize,
-    state: PomodoroState,
+    pub state: PomodoroState,
     cyclesDisplayMode: CyclesDisplayMode,
     paused: bool,
     pub cycle_string_cache: String
 }
 
-enum PomodoroState {
+pub enum PomodoroState {
     Working,
     Resting,
     Done

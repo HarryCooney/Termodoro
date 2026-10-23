@@ -28,6 +28,8 @@ impl App {
             });
         canvas.render(area, buf);
     }
+
+    //Menu Icons
     pub fn menu_icon_config(&self, color: Color, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
         let canvas = Canvas::default()
@@ -66,6 +68,8 @@ impl App {
             });
         icon.render(area, buf);
     }
+
+    //Book Icon
     pub fn timer_work_icon(&self, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
         let icon = Canvas::default()
@@ -299,6 +303,137 @@ impl App {
 
             });
         icon.render(area, buf);
+    }
+
+    //Tea Icon
+    pub fn timer_break_icon_frame_one(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::new();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 40.0])
+            .y_bounds([0.0, 14.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                //Tea
+                ctx.draw(&FilledLine::new(18.5, 6.8, 23.5, 6.8, 7.5, Color::DarkGray));
+                ctx.draw(&Line::new(13.5, 7.5, 28.5, 7.5, Color::DarkGray));
+                //Base of cup
+                ctx.draw(&Line::new(15.0, 3.0, 26.0, 3.0, Color::White));
+
+                //Left side of cup
+                ctx.draw(&Line::new(15.0, 3.0, 12.0, 4.0, Color::White));
+                ctx.draw(&Line::new(11.5, 4.2, 11.0, 4.2, Color::White));
+                ctx.draw(&Line::new(10.5, 4.7, 10.0, 6.2, Color::White));
+                ctx.draw(&Line::new(10.0, 6.2, 10.0, 7.5, Color::White));
+
+                //Right side of cup
+                ctx.draw(&Line::new(26.0, 3.0, 29.0, 4.0, Color::White));
+                ctx.draw(&Line::new(29.5, 4.2, 30.0, 4.2, Color::White));
+                ctx.draw(&Line::new(30.5, 4.7, 31.0, 6.2, Color::White));
+                ctx.draw(&Line::new(31.0, 6.2, 31.0, 7.5, Color::White));
+                
+                //Rim
+                ctx.draw(&Line::new(10.5, 7.5, 13.0, 7.3, Color::White));
+                ctx.draw(&Line::new(14.5, 6.8, 17.5, 6.8, Color::White));
+
+                ctx.draw(&Line::new(12.0, 8.0, 13.0, 8.2, Color::White));
+                ctx.draw(&Line::new(14.0, 8.5, 17.5, 8.5, Color::White));
+
+                //Center of rim
+                ctx.draw(&Line::new(18.0, 6.3, 23.5, 6.3, Color::White));
+                ctx.draw(&Line::new(18.0, 9.0, 23.5, 9.0, Color::White));
+
+                ctx.draw(&Line::new(30.5, 7.5, 28.0, 7.3, Color::White));
+                ctx.draw(&Line::new(27.5, 6.8, 24.0, 6.8, Color::White));
+
+                ctx.draw(&Line::new(27.5, 8.5, 24.5, 8.5, Color::White));
+
+                //Steam
+                ctx.draw(&Line::new(18.0, 10.0, 18.5, 10.5, Color::White));
+                ctx.draw(&Line::new(18.5, 10.5, 18.5, 11.0, Color::White));
+                ctx.draw(&Line::new(18.0, 11.5, 18.5, 12.0, Color::White));
+
+                ctx.draw(&Line::new(20.0, 10.0, 20.5, 11.0, Color::White));
+                ctx.draw(&Line::new(20.5, 11.0, 20.5, 11.0, Color::White));
+                ctx.draw(&Line::new(20.0, 11.5, 20.0, 12.0, Color::White));
+                ctx.draw(&Line::new(20.5, 12.5, 20.5, 12.5, Color::White));
+
+                ctx.draw(&Line::new(24.0, 10.3, 23.5, 10.5, Color::White));
+                ctx.draw(&Line::new(23.5, 10.5, 23.5, 11.0, Color::White));
+                ctx.draw(&Line::new(24.0, 11.5, 23.5, 12.0, Color::White));
+
+                ctx.draw(&Line::new(26.0, 9.7, 26.5, 10.2, Color::White));
+                ctx.draw(&Line::new(26.0, 10.5, 26.5, 11.2, Color::White));
+
+                ctx.draw(&Line::new(15.0, 9.7, 15.5, 10.2, Color::White));
+                ctx.draw(&Line::new(15.0, 10.5, 15.0, 10.5, Color::White));
+            });
+        icon.render(area, buf);
+    }
+
+    pub fn timer_break_icon_frame_two(&self, area: Rect, buf: &mut Buffer) {
+        let block = Block::new();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 40.0])
+            .y_bounds([0.0, 14.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                ctx.draw(&FilledLine::new(18.5, 6.8, 23.5, 6.8, 7.5, Color::DarkGray));
+                ctx.draw(&Line::new(13.5, 7.5, 28.5, 7.5, Color::DarkGray));
+                //Base of cup
+                ctx.draw(&Line::new(15.0, 3.0, 26.0, 3.0, Color::White));
+
+                //Left side of cup
+                ctx.draw(&Line::new(15.0, 3.0, 12.0, 4.0, Color::White));
+                ctx.draw(&Line::new(11.5, 4.2, 11.0, 4.2, Color::White));
+                ctx.draw(&Line::new(10.5, 4.7, 10.0, 6.2, Color::White));
+                ctx.draw(&Line::new(10.0, 6.2, 10.0, 7.5, Color::White));
+
+                //Right side of cup
+                ctx.draw(&Line::new(26.0, 3.0, 29.0, 4.0, Color::White));
+                ctx.draw(&Line::new(29.5, 4.2, 30.0, 4.2, Color::White));
+                ctx.draw(&Line::new(30.5, 4.7, 31.0, 6.2, Color::White));
+                ctx.draw(&Line::new(31.0, 6.2, 31.0, 7.5, Color::White));
+                
+                //Rim
+                ctx.draw(&Line::new(10.5, 7.5, 13.0, 7.3, Color::White));
+                ctx.draw(&Line::new(14.5, 6.8, 17.5, 6.8, Color::White));
+
+                ctx.draw(&Line::new(12.0, 8.0, 13.0, 8.2, Color::White));
+                ctx.draw(&Line::new(14.0, 8.5, 17.5, 8.5, Color::White));
+
+                //Center of rim
+                ctx.draw(&Line::new(18.0, 6.3, 23.5, 6.3, Color::White));
+                ctx.draw(&Line::new(18.0, 9.0, 23.5, 9.0, Color::White));
+
+                ctx.draw(&Line::new(30.5, 7.5, 28.0, 7.3, Color::White));
+                ctx.draw(&Line::new(27.5, 6.8, 24.0, 6.8, Color::White));
+
+                ctx.draw(&Line::new(27.5, 8.5, 24.5, 8.5, Color::White));
+
+                //Steam
+                ctx.draw(&Line::new(18.5, 10.5, 18.0, 11.0, Color::White));
+                ctx.draw(&Line::new(18.0, 11.0, 18.0, 11.5, Color::White));
+                ctx.draw(&Line::new(18.5, 12.0, 18.0, 12.5, Color::White));
+
+                ctx.draw(&Line::new(20.5, 10.5, 20.0, 11.5, Color::White));
+                ctx.draw(&Line::new(20.0, 11.5, 20.0, 11.5, Color::White));
+                ctx.draw(&Line::new(20.5, 12.0, 20.5, 12.5, Color::White));
+                ctx.draw(&Line::new(20.0, 12.8, 20.0, 13.0, Color::White));
+
+                ctx.draw(&Line::new(23.5, 10.5, 23.5, 10.5, Color::White));
+                ctx.draw(&Line::new(24.0, 11.0, 24.0, 11.5, Color::White));
+                ctx.draw(&Line::new(23.5, 12.0, 24.0, 12.5, Color::White));
+
+                ctx.draw(&Line::new(26.0, 10.2, 26.5, 10.7, Color::White));
+                ctx.draw(&Line::new(26.0, 11.0, 26.5, 12.2, Color::White));
+
+                ctx.draw(&Line::new(14.5, 10.2, 15.0, 10.7, Color::White));
+                ctx.draw(&Line::new(14.5, 11.0, 14.5, 11.0, Color::White));
+            });
+        icon.render(area, buf);
+
     }
 
     pub fn render_icon(&self, icon: MenuIcon, colors: &Vec<Color>, area: Rect, buf: &mut Buffer) {

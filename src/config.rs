@@ -21,9 +21,9 @@ impl Config {
 impl Default for Config {
     fn default() -> Config {
         Self {
-            work: Duration::new(1, 0),
-            rest: Duration::new(1, 0),
-            cycles: 8
+            work: Duration::new(5, 0),
+            rest: Duration::new(5, 0),
+            cycles: 2
         }
     }
 }
