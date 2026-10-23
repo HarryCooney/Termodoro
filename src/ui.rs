@@ -10,24 +10,44 @@ use crate::app::{App, AppState};
 use crate::icons::*;
 use crate::clock::Clock;
 use crate::icons::MenuIcon;
-use crate::pomodoro::PomodoroState;
-
+use crate::pomodoro::PomodoroTimerState;
 
 
 impl App {
-    //TODO
-    //Add menu rendering
     pub fn render(&mut self, frame: &mut Frame) {
         frame.render_widget(self, frame.area());
     }
     fn render_menu(&self, area: Rect, buf: &mut Buffer) {
+
+        if self.menu.get_num_of_items() == 4 {
+            self.render_scrollable_menu(area, buf);
+        } else {
+            self.render_fixed_menu(area, buf);
+        }
+    }
+
+    fn render_fixed_menu(&self, area: Rect, buf: &mut Buffer) {
         let layout = App::vertical_menu_layout(area);
         let icon_areas = App::split_area_in_thirds_flex(layout[1]);
         let colors = self.generate_menu_icon_colors();
-        self.render_icon(MenuIcon::Configs, &colors, icon_areas[0], buf);
-        self.render_icon(MenuIcon::Apple, &colors, icon_areas[1], buf);
-        self.render_icon(MenuIcon::NewConfig, &colors, icon_areas[2], buf);
+        self.render_icon(MenuIcon::Configs, colors[0], icon_areas[0], buf);
+        self.render_icon(MenuIcon::Apple, colors[1], icon_areas[1], buf);
+        self.render_icon(MenuIcon::NewConfig, colors[2], icon_areas[2], buf);
     }
+
+    fn render_scrollable_menu(&self, area: Rect, buf: &mut Buffer) {
+        let layout = App::vertical_menu_layout(area);
+        let icon_areas = App::split_area_in_thirds_flex(layout[1]);
+        let colors = self.generate_menu_icon_colors();
+        if self.menu.get_page_num() == 0 {
+            self.render_icon(MenuIcon::Configs, colors[0], icon_areas[0], buf);
+            self.render_icon(MenuIcon::Play, colors[1], icon_areas[1], buf);
+            self.render_icon(MenuIcon::Apple, colors[2], icon_areas[2], buf);
+        } else {
+            self.render_icon(MenuIcon::NewConfig, colors[0], icon_areas[1], buf);
+        }
+    }
+
 
     fn render_timer_widget(&self, area: Rect, buf: &mut Buffer) {
         let timer_rect = App::timer_area(area);
@@ -39,20 +59,16 @@ impl App {
                 Constraint::Length(1),  //Blank space
                 Constraint::Length(1)   //Cycles
             ]).split(timer_rect);
-        let block1 = Block::new();
-        let block3 = Block::new();
-        let text1 = Paragraph::new("").centered().block(block1);
+        let cycles_block = Block::new();
         self.render_timer(timer_layout[1], buf);
-        //println!("{}", self.pomodoro.cycle_string_cache);
-        let text3 = Paragraph::new(self.pomodoro.cycle_string_cache.as_str()).centered().block(block3);
+        let text3 = Paragraph::new(self.pomodoro.cycle_string_cache.as_str()).centered().block(cycles_block);
         self.handle_timer_icon(timer_layout[0], buf);
-        text1.render(timer_layout[1], buf);
         text3.render(timer_layout[3], buf);
     }
 
     fn render_timer(&self, area: Rect, buf: &mut Buffer) {
         let block = Block::new();
-        let clock_text = self.pomodoro.time_remaining_to_string();
+        let clock_text = self.pomodoro.clock_text_to_string();
         let clock = Paragraph::new(clock_text).centered().block(block);
         clock.render(area, buf);
     }
@@ -91,16 +107,16 @@ impl App {
     }
 
     fn handle_timer_icon(&self, area: Rect, buf: &mut Buffer) {
-        match self.pomodoro.state {
-            PomodoroState::Working => {
+        match self.pomodoro.timer_state {
+            PomodoroTimerState::Working => {
                 if self.animations[0].is_running() {
                     self.render_timer_animation(area, buf);
                 } else {
                     self.timer_work_icon(area, buf);
                 }
             },
-            PomodoroState::Resting => self.render_resing_animation(area, buf),
-            PomodoroState::Done => self.render_resing_animation(area, buf),
+            PomodoroTimerState::Resting => self.render_resing_animation(area, buf),
+            PomodoroTimerState::Done => self.render_resing_animation(area, buf),
         }
     }
 

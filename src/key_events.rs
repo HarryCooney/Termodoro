@@ -2,6 +2,7 @@ use color_eyre::Result;
 use crate::config::Config;
 use crossterm::event::{self, Event, KeyEvent, KeyEventKind, KeyCode};
 use crate::app::{App, AppState};
+use crate::pomodoro::Pomodoro;
 
 impl App {
     pub fn handle_events(&mut self) -> Result<()> {
@@ -29,8 +30,14 @@ impl App {
     fn handle_menu_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
-            KeyCode::Char('h') => self.menu.choose_previous_option(),
-            KeyCode::Char('l') => self.menu.choose_next_option(),
+            KeyCode::Char('h') => {
+                self.menu.choose_previous_option();
+                self.menu.update_current_page();
+            }
+            KeyCode::Char('l') => {
+                self.menu.choose_next_option();
+                self.menu.update_current_page();
+            }
             KeyCode::Enter => self.enter_on_menu(),
             _ => {}
         }
@@ -41,21 +48,45 @@ impl App {
     fn handle_pomodoro_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
+            KeyCode::Char(' ') => self.pomodoro.toggle_pause(),
+            KeyCode::Esc => {
+                self.set_state(AppState::Menu);
+                self.pomodoro.pause();
+                self.menu.update_state(self.pomodoro.timer_active);
+                self.menu.select(1);
+            }
             _ => {}
         }
     }
 
     fn enter_on_menu(&mut self) {
-        match self.menu.selected() {
-            0 => {},
-            1 => {
-                self.set_state(AppState::PomodoroState);
-                if let Some(config) = self.config {
-                    self.pomodoro.load_config(config);
-                }
-            },
-            2 => {},
-            _ => {}
+        if self.menu.get_num_of_items() == 3 {
+            match self.menu.selected() {
+                0 => {},
+                1 => {
+                    self.set_state(AppState::PomodoroState);
+                    self.pomodoro.timer_active = true;
+                    if let Some(config) = self.config  {
+                        self.pomodoro.load_config(config);
+                    }
+                },
+                2 => {},
+                _ => {}
+            }
+        } else {
+            match self.menu.selected() {
+                0 => {},
+                1 => self.set_state(AppState::PomodoroState),
+                2 => {
+                    self.set_state(AppState::PomodoroState);
+                    self.pomodoro.timer_active = true;
+                    if let Some(config) = self.config  {
+                        self.pomodoro.load_config(config);
+                    }
+                },
+                3 => {},
+                _ => {}
+            }
         }
     }
 }

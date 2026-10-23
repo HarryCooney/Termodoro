@@ -3,7 +3,7 @@ use color_eyre::Result;
 use crossterm::event::{self, poll, read};
 use std::time::Duration;
 use std::thread::sleep;
-use crate::pomodoro::{Pomodoro, PomodoroState};
+use crate::pomodoro::{Pomodoro, PomodoroTimerState};
 use crate::menu::Menu;
 use crate::config::Config;
 use crate::config_menu::Config_Menu;
@@ -19,8 +19,7 @@ pub struct App {
     pub config_menu: Config_Menu,
     pub clock: Clock,
     pub i: usize,
-    pub animations: Vec<Animation>
-
+    pub animations: Vec<Animation>,
 }
 
 pub enum AppState {
@@ -110,13 +109,13 @@ impl App {
     }
 
     fn schedule_pomodoro_animations(&mut self) {
-        match self.pomodoro.state {
-            PomodoroState::Working => {
+        match self.pomodoro.timer_state {
+            PomodoroTimerState::Working => {
                 if self.clock.tick % 50 == 0 {
                     self.animations[0].running = true;
                 }
             },
-            PomodoroState::Resting => {
+            PomodoroTimerState::Resting => {
                 self.animations[1].running = true;
             },
             _ => {}

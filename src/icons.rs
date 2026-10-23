@@ -10,7 +10,8 @@ use crate::app::App;
 pub enum MenuIcon {
     Apple,
     Configs,
-    NewConfig
+    NewConfig,
+    Play
 }
 impl App {
     pub fn menu_icon_apple(&self, color: Color, area: Rect, buf: &mut Buffer) {
@@ -65,6 +66,31 @@ impl App {
                 ctx.draw(&Line::new(9.0, 4.0, 14.5, 4.0, color));
                 ctx.draw(&Line::new(9.0, 6.0, 10.5, 6.0, color));
                 ctx.draw(&Line::new(9.0, 7.5, 11.5, 7.5, color));
+            });
+        icon.render(area, buf);
+    }
+
+    pub fn menu_icon_resume_study(&self, color: Color, area: Rect, buf: &mut Buffer) {
+        let block = Block::new();
+        let icon = Canvas::default()
+            .x_bounds([0.0, 23.0])
+            .y_bounds([0.0, 11.0])
+            .marker(Marker::Quadrant)
+            .block(block)
+            .paint(|ctx| {
+                ctx.draw(&Line::new(8.0, 9.0, 8.0, 3.0, color));
+                ctx.draw(&Line::new(8.5, 9.0, 8.5, 3.0, color));
+                ctx.draw(&Line::new(9.0, 8.5, 9.0, 3.5, color));
+                ctx.draw(&Line::new(9.5, 8.5, 9.5, 3.5, color));
+                ctx.draw(&Line::new(10.0, 8.0, 10.0, 4.0, color));
+                ctx.draw(&Line::new(10.3, 8.0, 10.3, 4.0, color));
+                ctx.draw(&Line::new(10.5, 7.5, 10.5, 4.5, color));
+                ctx.draw(&Line::new(11.0, 7.5, 11.0, 4.5, color));
+                ctx.draw(&Line::new(11.3, 7.5, 11.3, 4.5, color));
+                ctx.draw(&Line::new(11.5, 7.0, 11.5, 5.0, color));
+                ctx.draw(&Line::new(12.0, 7.0, 12.0, 5.0, color));
+                ctx.draw(&Line::new(12.5, 6.5, 12.5, 6.0, color));
+                ctx.draw(&Line::new(13.0, 6.5, 13.0, 6.0, color));
             });
         icon.render(area, buf);
     }
@@ -436,23 +462,29 @@ impl App {
 
     }
 
-    pub fn render_icon(&self, icon: MenuIcon, colors: &Vec<Color>, area: Rect, buf: &mut Buffer) {
+    pub fn render_icon(&self, icon: MenuIcon, colors: Color, area: Rect, buf: &mut Buffer) {
         let icon_layout = Layout::vertical([
             Constraint::Fill(1),
             Constraint::Length(1)
         ]).split(area);
+
         match icon {
             MenuIcon::Configs => {
-                self.menu_icon_config(colors[0], icon_layout[0], buf);
-                self.render_icon_text("Configs", colors[0], icon_layout[1], buf);
+                self.menu_icon_config(colors, icon_layout[0], buf);
+                self.render_icon_text("Configs", colors, icon_layout[1], buf);
             },
             MenuIcon::Apple => {
-                self.menu_icon_apple(colors[1], icon_layout[0], buf);
-                self.render_icon_text("Start", colors[1], icon_layout[1], buf);
+                self.menu_icon_apple(colors, icon_layout[0], buf);
+                self.render_icon_text("Start", colors, icon_layout[1], buf);
             },
             MenuIcon::NewConfig => {
-                self.menu_icon_new_config(colors[2], icon_layout[0], buf);
-                self.render_icon_text("New Config", colors[2], icon_layout[1], buf);
+                self.menu_icon_new_config(colors, icon_layout[0], buf);
+                self.render_icon_text("New Config", colors, icon_layout[1], buf);
+            },
+            MenuIcon::Play => {
+                self.menu_icon_resume_study(colors, icon_layout[0], buf);
+                self.render_icon_text("Resume Session", colors, icon_layout[1], buf);
+
             }
         };
     }
@@ -469,12 +501,7 @@ impl App {
     ///icon_colors[0] = Config, icon_colors[1] = Apple, icon_colors[2] = NewConfig
     pub fn generate_menu_icon_colors(&self) -> Vec<Color> {
         let mut icon_colors = vec![Color::DarkGray, Color::DarkGray, Color::DarkGray];
-        match self.menu.selected() {
-            0 => icon_colors[0] = Color::White,
-            1 => icon_colors[1] = Color::White,
-            2 => icon_colors[2] = Color::White,
-            _ => {}
-        }
+        icon_colors[self.menu.selected() % 3] = Color::White;
         icon_colors
     }
 }

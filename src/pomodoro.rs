@@ -6,16 +6,17 @@ pub struct Pomodoro {
     config: Option<Config>,
     timer: Duration,
     cyclesRemaining: usize,
-    pub state: PomodoroState,
+    pub timer_state: PomodoroTimerState,
     cyclesDisplayMode: CyclesDisplayMode,
+    pub timer_active: bool,
     paused: bool,
     pub cycle_string_cache: String
 }
 
-pub enum PomodoroState {
+pub enum PomodoroTimerState {
     Working,
     Resting,
-    Done
+    Done,
 }
 
 enum CyclesDisplayMode {
@@ -29,8 +30,9 @@ impl Pomodoro {
             config: None,
             timer: Duration::new(0, 0),
             cyclesRemaining: 0,
-            state: PomodoroState::Working,
+            timer_state: PomodoroTimerState::Working,
             cyclesDisplayMode: CyclesDisplayMode::Blocks,
+            timer_active: false,
             paused: true,
             cycle_string_cache: String::new()
         }
@@ -40,7 +42,7 @@ impl Pomodoro {
         self.config = Some(config);
         self.timer = config.work;
         self.cyclesRemaining = config.cycles;
-        self.state = PomodoroState::Working;
+        self.timer_state = PomodoroTimerState::Working;
         if let Some(config) = self.config && config.cycles > 7 {
                 self.cyclesDisplayMode = CyclesDisplayMode::Fraction
         }
@@ -49,14 +51,16 @@ impl Pomodoro {
     }
 
     pub fn update_pomodoro_timer(&mut self, delta_time: &Duration) {
-        match self.timer.checked_sub(*delta_time) {
-            Some(time) => {
-                self.timer = time;
-            },
-            None => {
-                self.update_cycles();
-                self.handle_pomodoro_state();
-                self.update_cycles_string_cache();
+        if !self.paused {
+            match self.timer.checked_sub(*delta_time) {
+                Some(time) => {
+                    self.timer = time;
+                },
+                None => {
+                    self.update_cycles();
+                    self.handle_pomodoro_state();
+                    self.update_cycles_string_cache();
+                }
             }
         }
     }
@@ -65,19 +69,20 @@ impl Pomodoro {
         if self.cyclesRemaining > 0 {
             self.switch_between_work_and_break();
         } else {
-            self.state = PomodoroState::Done;
+            self.timer_state = PomodoroTimerState::Done;
+            self.timer_active = false;
         }
     }
     fn switch_between_work_and_break(&mut self) {
-        match self.state {
-            PomodoroState::Working => {
-                self.state = PomodoroState::Resting;
+        match self.timer_state {
+            PomodoroTimerState::Working => {
+                self.timer_state = PomodoroTimerState::Resting;
                 if let Some(config) = self.config {
                     self.timer = config.rest;
                 }
             }
-            PomodoroState::Resting => {
-                self.state = PomodoroState::Working;
+            PomodoroTimerState::Resting => {
+                self.timer_state = PomodoroTimerState::Working;
                 if let Some(config) = self.config {
                     self.timer = config.work;
                 }
@@ -85,20 +90,33 @@ impl Pomodoro {
             _ => {}
         }
     }
+    pub fn is_paused(&self) -> bool {
+        self.paused
+    }
 
+    pub fn pause(&mut self) { self.paused = true }
+    pub fn unpause(&mut self) { self.paused = false }
+
+    pub fn toggle_pause(&mut self) {
+        self.paused = !self.paused
+    }
     fn update_cycles(&mut self) {
-        if let  PomodoroState::Resting = self.state {
+        if let  PomodoroTimerState::Resting = self.timer_state {
             self.cyclesRemaining = self.cyclesRemaining.saturating_sub(1);
         }
     }
 
-    pub fn time_remaining_to_string(&self) -> String {
-        match self.state {
-            PomodoroState::Done => String::from("Study Finished!"),
+    pub fn clock_text_to_string(&self) -> String {
+        match self.timer_state {
+            PomodoroTimerState::Done => String::from("Study Finished!"),
             _ => {
                 let minutes = self.timer.as_secs() / 60;
                 let seconds = self.timer.as_secs() % 60;
-                format!("{} : {}", minutes, seconds)
+                if self.paused {
+                    format!("Paused - {} : {}", minutes, seconds)
+                } else {
+                    format!("{} : {}", minutes, seconds)
+                }
             }
         }
     }
