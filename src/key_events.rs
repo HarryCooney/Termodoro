@@ -52,7 +52,9 @@ impl App {
             KeyCode::Char('k') => self.config_menu.select_previous(),
             KeyCode::Enter => {
                 self.config = self.config_menu.select_config();
-                self.set_state(AppState::Menu)
+                self.set_state(AppState::Menu);
+                self.pomodoro.timer_active = false;
+                self.menu.update_state(false);
             },
             KeyCode::Char('x') => self.config_menu.remove_config(),
             KeyCode::Esc => self.set_state(AppState::Menu),
@@ -99,7 +101,7 @@ impl App {
             }
         } else {
             match self.menu.selected() {
-                0 => {},
+                0 => self.set_state(AppState::ConfigSelection),
                 1 => self.set_state(AppState::PomodoroState),
                 2 => {
                     self.set_state(AppState::PomodoroState);
@@ -108,7 +110,7 @@ impl App {
                         self.pomodoro.load_config(config);
                     }
                 },
-                3 => {},
+                3 => self.set_state(AppState::NewConfig),
                 _ => {}
             }
         }
