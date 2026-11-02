@@ -1,8 +1,6 @@
 use color_eyre::Result;
-use crate::config::Config;
 use crossterm::event::{self, Event, KeyEvent, KeyEventKind, KeyCode};
 use crate::app::{App, AppState};
-use crate::pomodoro::Pomodoro;
 
 impl App {
     pub fn handle_events(&mut self) -> Result<()> {
@@ -29,7 +27,11 @@ impl App {
 
     fn handle_menu_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
-            KeyCode::Char('q') => self.quit(),
+            KeyCode::Char('q') => {
+                //TODO: Fix this terrible lack of error handling
+                let _ = self.config_menu.save_configs();
+                self.quit();
+                },
             KeyCode::Char('h') => {
                 self.menu.choose_previous_option();
                 self.menu.update_current_page();
@@ -42,9 +44,28 @@ impl App {
             _ => {}
         }
     }
-    fn handle_config_selection_events(&mut self, key_event: &KeyEvent) {}
+    fn handle_config_selection_events(&mut self, key_event: &KeyEvent) {
+
+        match key_event.code {
+            KeyCode::Char('q') => self.quit(),
+            KeyCode::Char('j') => self.config_menu.select_next(),
+            KeyCode::Char('k') => self.config_menu.select_previous(),
+            KeyCode::Enter => {
+                self.config = self.config_menu.select_config();
+                self.set_state(AppState::Menu)
+            },
+            KeyCode::Char('x') => self.config_menu.remove_config(),
+            KeyCode::Esc => self.set_state(AppState::Menu),
+            _ => {}
+        }
+    }
     fn handle_return_to_menu_popup_events(&mut self, key_event: &KeyEvent) {}
-    fn handle_new_config_events(&mut self, key_event: &KeyEvent) {}
+    fn handle_new_config_events(&mut self, key_event: &KeyEvent) {
+        match key_event.code {
+            KeyCode::Char('q') => self.quit(),
+            _ => {}
+        }
+    }
     fn handle_pomodoro_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
@@ -62,7 +83,10 @@ impl App {
     fn enter_on_menu(&mut self) {
         if self.menu.get_num_of_items() == 3 {
             match self.menu.selected() {
-                0 => {},
+                0 => {
+                    self.set_state(AppState::ConfigSelection)
+                },
+
                 1 => {
                     self.set_state(AppState::PomodoroState);
                     self.pomodoro.timer_active = true;
@@ -70,7 +94,7 @@ impl App {
                         self.pomodoro.load_config(config);
                     }
                 },
-                2 => {},
+                2 => self.set_state(AppState::NewConfig),
                 _ => {}
             }
         } else {

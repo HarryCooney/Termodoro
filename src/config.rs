@@ -1,4 +1,7 @@
-use std::time::*; #[derive(Copy, Clone)]
+use std::time::*; 
+use serde::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct Config {
     pub work: Duration,
     pub rest: Duration,
@@ -16,25 +19,36 @@ impl Config {
             cycles
         })
     }
+
+    pub fn to_string_icon_format(&self) -> String {
+         let work_string = time_duration_to_string(&self.work);
+        let rest_string = time_duration_to_string(&self.rest);
+        format!("W {}  R {}  C {}",
+            work_string, rest_string, self.cycles)
+    }
 }
 
 impl Default for Config {
     fn default() -> Config {
         Self {
-            work: Duration::new(5, 0),
-            rest: Duration::new(5, 0),
-            cycles: 2
+            work: Duration::new(60 * 50, 0),
+            rest: Duration::new(60 * 10, 0),
+            cycles: 3
         }
     }
 }
-/*
-impl Clone for Config {
-    fn clone(&self) -> Self {
-        Config {
-            work: self.work,
-            rest: self.rest,
-            cycles: self.cycles
-        }
+
+impl ToString for Config {
+    fn to_string(&self) -> String {
+        let work_string = time_duration_to_string(&self.work);
+        let rest_string = time_duration_to_string(&self.rest);
+        format!("Work: {:02}   Rest - {:02}   Cycles - {}",
+            work_string, rest_string, self.cycles)
     }
 }
-*/
+fn time_duration_to_string(time: &Duration) -> String {
+    let time_as_secs = time.as_secs();
+    let minutes = time_as_secs / 60;
+    let secs = time_as_secs % 60;
+    format!("{:02}:{:02}", minutes, secs)
+}

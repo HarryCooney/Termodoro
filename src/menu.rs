@@ -2,7 +2,7 @@ pub struct Menu {
     //0 = Configs, 1 = start timer, 2 = new config
     selected_option: usize,
     num_of_items: usize,
-    page_num: usize
+    page_num: usize,
 }
 
 impl Menu {

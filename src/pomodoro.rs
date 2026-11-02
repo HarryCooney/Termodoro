@@ -1,13 +1,12 @@
 use crate::config::Config;
-use crate::clock::Clock;
 use std::time::*;
 
 pub struct Pomodoro {
     config: Option<Config>,
     timer: Duration,
-    cyclesRemaining: usize,
+    cycles_remaining: usize,
     pub timer_state: PomodoroTimerState,
-    cyclesDisplayMode: CyclesDisplayMode,
+    cycles_display_mode: CyclesDisplayMode,
     pub timer_active: bool,
     paused: bool,
     pub cycle_string_cache: String
@@ -29,9 +28,9 @@ impl Pomodoro {
         Self {
             config: None,
             timer: Duration::new(0, 0),
-            cyclesRemaining: 0,
+            cycles_remaining: 0,
             timer_state: PomodoroTimerState::Working,
-            cyclesDisplayMode: CyclesDisplayMode::Blocks,
+            cycles_display_mode: CyclesDisplayMode::Blocks,
             timer_active: false,
             paused: true,
             cycle_string_cache: String::new()
@@ -41,10 +40,10 @@ impl Pomodoro {
     pub fn load_config(&mut self, config: Config) {
         self.config = Some(config);
         self.timer = config.work;
-        self.cyclesRemaining = config.cycles;
+        self.cycles_remaining = config.cycles;
         self.timer_state = PomodoroTimerState::Working;
         if let Some(config) = self.config && config.cycles > 7 {
-                self.cyclesDisplayMode = CyclesDisplayMode::Fraction
+                self.cycles_display_mode = CyclesDisplayMode::Fraction
         }
         self.paused = false;
         self.update_cycles_string_cache();
@@ -66,7 +65,7 @@ impl Pomodoro {
     }
     
     fn handle_pomodoro_state(&mut self) {
-        if self.cyclesRemaining > 0 {
+        if self.cycles_remaining > 0 {
             self.switch_between_work_and_break();
         } else {
             self.timer_state = PomodoroTimerState::Done;
@@ -102,7 +101,7 @@ impl Pomodoro {
     }
     fn update_cycles(&mut self) {
         if let  PomodoroTimerState::Resting = self.timer_state {
-            self.cyclesRemaining = self.cyclesRemaining.saturating_sub(1);
+            self.cycles_remaining = self.cycles_remaining.saturating_sub(1);
         }
     }
 
@@ -123,7 +122,7 @@ impl Pomodoro {
 
     //TODO: Test this for wayy more inputs
     pub fn update_cycles_string_cache(&mut self) {
-        match self.cyclesDisplayMode {
+        match self.cycles_display_mode {
             CyclesDisplayMode::Blocks => self.cycle_string_cache = self.cycles_block_format(),
             CyclesDisplayMode::Fraction => self.cycle_string_cache = self.cycles_fraction_format()
         }
@@ -131,15 +130,15 @@ impl Pomodoro {
 
     fn cycles_block_format(&mut self) -> String {
         if let Some(config) = self.config {
-            let cycles_completed = config.cycles.saturating_sub(self.cyclesRemaining);
+            let cycles_completed = config.cycles.saturating_sub(self.cycles_remaining);
             let mut sb = String::new();
             for _ in 0..cycles_completed {
                 sb.push_str("■ ");
             }
-            if self.cyclesRemaining > 0 {
+            if self.cycles_remaining > 0 {
                 sb.push_str("⬚ ");
             }
-            for _ in 0..self.cyclesRemaining.saturating_sub(1) {
+            for _ in 0..self.cycles_remaining.saturating_sub(1) {
                 sb.push_str("□ ");
             }
             return sb.trim().to_string();
@@ -150,7 +149,7 @@ impl Pomodoro {
 
     fn cycles_fraction_format(&mut self) -> String {
         if let Some(config) = self.config {
-            let cycles_completed = config.cycles.saturating_sub(self.cyclesRemaining);
+            let cycles_completed = config.cycles.saturating_sub(self.cycles_remaining);
             return format!("{} / {}", cycles_completed, config.cycles);
         }
 

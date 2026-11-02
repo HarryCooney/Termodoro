@@ -462,9 +462,20 @@ impl App {
 
     }
 
+    fn render_loaded_config_info(&self, color: Color, area: Rect, buf: &mut Buffer) {
+        match self.config {
+            Some(config) => {
+                self.render_icon_text(config.to_string_icon_format().as_str(), color, area, buf);
+            },
+            None => self.render_icon_text("No timer config loaded", color, area, buf)
+        }
+    }
+
     pub fn render_icon(&self, icon: MenuIcon, colors: Color, area: Rect, buf: &mut Buffer) {
         let icon_layout = Layout::vertical([
             Constraint::Fill(1),
+            Constraint::Length(1),
+            Constraint::Length(1),
             Constraint::Length(1)
         ]).split(area);
 
@@ -476,6 +487,7 @@ impl App {
             MenuIcon::Apple => {
                 self.menu_icon_apple(colors, icon_layout[0], buf);
                 self.render_icon_text("Start", colors, icon_layout[1], buf);
+                self.render_loaded_config_info(colors, icon_layout[3], buf);
             },
             MenuIcon::NewConfig => {
                 self.menu_icon_new_config(colors, icon_layout[0], buf);

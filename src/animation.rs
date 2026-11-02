@@ -32,7 +32,7 @@ impl Animation {
         }
     }
     
-    pub fn new(animation_type: AnimationType) -> Animation {
+    fn new(animation_type: AnimationType) -> Animation {
         match animation_type {
             AnimationType::BookTurningPage => Self {
                 frames: 6,

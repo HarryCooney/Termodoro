@@ -1,14 +1,11 @@
 use ratatui::widgets::{Widget, StatefulWidget, Block,
     Paragraph, List, ListItem, Wrap, Padding};
 use ratatui::layout::{Layout, Rect, Constraint, Direction, Alignment, Flex};
+use ratatui::style::{Color, Stylize};
 use std::rc::Rc;
-use ratatui::symbols::*;
 use ratatui::buffer::Buffer;
 use ratatui::Frame;
-use ratatui::style::{Color, Stylize};
 use crate::app::{App, AppState};
-use crate::icons::*;
-use crate::clock::Clock;
 use crate::icons::MenuIcon;
 use crate::pomodoro::PomodoroTimerState;
 
@@ -139,15 +136,59 @@ impl App {
             _ => self.timer_break_icon_frame_one(area, buf)
         }
     }
+
+    fn render_new_config_popup(&self, area: Rect, buf: &mut Buffer) {
+        let popup_area = centered_rect(30, 30, area);
+        let split_area = App::split_area_in_thirds_flex(popup_area);
+        Paragraph::new("Work 00").centered().block(Block::new())
+            .render(split_area[0], buf);
+        Paragraph::new("Rest 00").centered().block(Block::new())
+            .render(split_area[1], buf);
+        Paragraph::new("Cycles 2").centered().block(Block::new())
+            .render(split_area[2], buf);
+    }
+
+    fn render_config_list(&mut self, area: Rect, buf: &mut Buffer) {
+        let outer_area = centered_rect(60, 20, area);
+        let inner_area = centered_rect(50, 10, area);
+        let list_outer_block = Block::new().bg(Color::DarkGray);
+        let list_inner_block = Block::bordered().bg(Color::DarkGray);
+        let config_strings = self.config_menu.in_string_format();
+        let list = List::new(config_strings)
+            .block(list_inner_block)
+            .highlight_symbol("> ");
+        StatefulWidget::render(list, inner_area, buf, &mut self.config_menu.list_state);
+        list_outer_block.render(outer_area, buf);
+    }
 }
 impl Widget for &mut App{
     fn render(self, area: Rect, buf: &mut Buffer) {
         match self.state {
             AppState::Menu => self.render_menu(area, buf),
             AppState::PomodoroState => self.render_timer_widget(area, buf),
-            AppState::ConfigSelection => {},
-            AppState::NewConfig => {},
+            AppState::ConfigSelection => self.render_config_list(area, buf),
+            AppState::NewConfig => self.render_new_config_popup(area, buf),
             AppState:: ConfirmReturnToMenu => {}
         }
     }
 }
+
+fn centered_rect(x_percent: u16, y_percent: u16, area: Rect) -> Rect {
+    let horizontal_area = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage((100 - x_percent) / 2),
+            Constraint::Percentage(x_percent),
+            Constraint::Percentage((100 - x_percent) / 2)
+        ]).split(area);
+    Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage((100 - y_percent) / 2),
+            Constraint::Percentage(y_percent),
+            Constraint::Percentage((100 - y_percent) / 2)
+        ])
+        .split(horizontal_area[1])[1]
+}
+
+

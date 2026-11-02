@@ -2,8 +2,8 @@ use std::time::*;
 pub struct Clock {
     pub timer: Duration,
     pub tick: usize, //Clock tick is 20 TPS
-    pub tick_elapse: Duration
-
+    pub tick_elapse: Duration,
+    frame_duration: Duration
 }
 
 impl Clock {
@@ -13,7 +13,8 @@ impl Clock {
         Clock {
             timer: clock_start_time,
             tick: 0,
-            tick_elapse: clock_start_time
+            tick_elapse: clock_start_time,
+            frame_duration: Duration::new(0, 33333333)
         }
     }
 
@@ -26,6 +27,13 @@ impl Clock {
             self.tick += 1;
         }
         
+    }
+
+    pub fn time_to_next_frame(&self) -> Duration {
+        if let Some(time) = self.frame_duration.checked_sub(self.tick_elapse) {
+            return time
+        }
+        Duration::new(0, 0)
     }
     
     fn current_time() -> Duration {

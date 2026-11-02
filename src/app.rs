@@ -1,12 +1,13 @@
 use ratatui::DefaultTerminal;
+use std::path::Path;
+use std::fs::write;
 use color_eyre::Result;
 use crossterm::event::{self, poll, read};
 use std::time::Duration;
-use std::thread::sleep;
 use crate::pomodoro::{Pomodoro, PomodoroTimerState};
 use crate::menu::Menu;
 use crate::config::Config;
-use crate::config_menu::Config_Menu;
+use crate::config_menu::ConfigMenu;
 use crate::clock::Clock;
 use crate::animation::Animation;
 
@@ -16,7 +17,7 @@ pub struct App {
     pub config: Option<Config>,
     pub pomodoro: Pomodoro,
     pub menu: Menu,
-    pub config_menu: Config_Menu,
+    pub config_menu: ConfigMenu,
     pub clock: Clock,
     pub i: usize,
     pub animations: Vec<Animation>,
@@ -38,7 +39,7 @@ impl App {
             config: Some(Config::default()),
             pomodoro: Pomodoro::new(),
             menu: Menu::new(),
-            config_menu: Config_Menu::new(),
+            config_menu: ConfigMenu::default(),
             clock: Clock::new(),
             i: 0,
             animations: Animation::default_animations()
@@ -46,7 +47,7 @@ impl App {
     }
     
     fn read_events(&mut self) -> Result<()> {
-        while event::poll(Duration::from_millis(0))? {
+        while event::poll(Duration::from_millis(34))? {
             self.handle_events()?;
         }
         Ok(())
@@ -54,18 +55,14 @@ impl App {
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         self.running = true;
+        self.config_menu.read_configs_from_file()?;
         while self.running {
             terminal.draw(|frame| self.render(frame))?;
             self.read_events()?;
             self.clock_events();
-
-            //TODO Find a better way to limit framerate to stop performance from tanking
-            //This is a plaster on a gaping wound.
-            sleep(Duration::from_millis(34));
         }
         Ok(())
     }
-
     pub fn set_state(&mut self, state: AppState) {
         self.state = state;
     }
@@ -98,9 +95,6 @@ impl App {
         self.run_animations();
     }
 
-    fn complete_cycle(&mut self) {
-    }
-
     fn schedule_animations(&mut self) {
         match self.state {
             AppState::PomodoroState => self.schedule_pomodoro_animations(),
@@ -111,7 +105,7 @@ impl App {
     fn schedule_pomodoro_animations(&mut self) {
         match self.pomodoro.timer_state {
             PomodoroTimerState::Working => {
-                if self.clock.tick % 50 == 0 {
+                if self.clock.tick % 120 == 0 {
                     self.animations[0].running = true;
                 }
             },
