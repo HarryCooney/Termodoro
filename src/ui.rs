@@ -8,6 +8,7 @@ use ratatui::Frame;
 use crate::app::{App, AppState};
 use crate::icons::MenuIcon;
 use crate::pomodoro::PomodoroTimerState;
+use crate::config::time_duration_to_string;
 
 
 impl App {
@@ -79,6 +80,7 @@ impl App {
             .flex(Flex::SpaceAround)
             .split(area)
     }
+
     fn vertical_menu_layout(area: Rect) -> Rc<[Rect]> {
         Layout::default()
             .direction(Direction::Vertical)
@@ -137,20 +139,30 @@ impl App {
         }
     }
 
+    //TODO: Fix this display.
+    //Work 00:00   Rest 00:00 Cycles: 0
+    //Should be in this format
     fn render_new_config_popup(&self, area: Rect, buf: &mut Buffer) {
-        let popup_area = centered_rect(30, 30, area);
-        let split_area = App::split_area_in_thirds_flex(popup_area);
-        Paragraph::new("Work 00").centered().block(Block::new())
-            .render(split_area[0], buf);
-        Paragraph::new("Rest 00").centered().block(Block::new())
-            .render(split_area[1], buf);
-        Paragraph::new("Cycles 2").centered().block(Block::new())
-            .render(split_area[2], buf);
+        let popup_area = centered_rect(50, 30, area);
+        let split_area = new_config_inner_area(popup_area);
+        let list_outer_block = Block::new().bg(Color::DarkGray);
+        if let Some(config) = self.new_config_buffer {
+            let work_text = format!("work: {}", time_duration_to_string(&config.work));
+            let rest_text = format!("rest: {}", time_duration_to_string(&config.rest));
+            let cycle_text = format!("Cycles: {}", config.cycles);
+            Paragraph::new(work_text).centered().block(Block::bordered())
+                .render(split_area[0], buf);
+            Paragraph::new(rest_text).centered().block(Block::bordered())
+                .render(split_area[1], buf);
+            Paragraph::new(cycle_text).centered().block(Block::bordered())
+                .render(split_area[2], buf);
+            list_outer_block.render(popup_area, buf);
+        }
     }
 
     fn render_config_list(&mut self, area: Rect, buf: &mut Buffer) {
-        let outer_area = centered_rect(60, 20, area);
-        let inner_area = centered_rect(50, 10, area);
+        let outer_area = centered_rect(60, 50, area);
+        let inner_area = centered_rect(90, 70, outer_area);
         let list_outer_block = Block::new().bg(Color::DarkGray);
         let list_inner_block = Block::bordered().bg(Color::DarkGray);
         let config_strings = self.config_menu.in_string_format();
@@ -171,6 +183,26 @@ impl Widget for &mut App{
             AppState:: ConfirmReturnToMenu => {}
         }
     }
+}
+
+fn new_config_inner_area(area: Rect) -> Rc<[Rect]> {
+    let vertical_area = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Fill(1),
+            Constraint::Length(3),
+            Constraint::Fill(1)
+        ])
+        .split(area);
+    Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Length(25),
+            Constraint::Length(25),
+            Constraint::Length(25),
+        ])
+        .flex(Flex::Center)
+        .split(vertical_area[1])
 }
 
 fn centered_rect(x_percent: u16, y_percent: u16, area: Rect) -> Rect {

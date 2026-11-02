@@ -1,6 +1,8 @@
 use color_eyre::Result;
 use crossterm::event::{self, Event, KeyEvent, KeyEventKind, KeyCode};
 use crate::app::{App, AppState};
+use crate::config::Config;
+use crate::new_config::CurrentlyEditing;
 
 impl App {
     pub fn handle_events(&mut self) -> Result<()> {
@@ -65,6 +67,23 @@ impl App {
     fn handle_new_config_events(&mut self, key_event: &KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
+            KeyCode::Char('k') => {
+                match self.new_config_currently_editing {
+                    CurrentlyEditing::Work => self.increment_work_duration(5),
+                    CurrentlyEditing::Rest => self.increment_rest_duration(5),
+                    CurrentlyEditing::Cycles => self.increment_cycles(1),
+                    _ => {}
+                }
+            }
+            KeyCode::Char('j') => {
+                match self.new_config_currently_editing {
+                    CurrentlyEditing::Work => self.decrement_work_duration(5),
+                    CurrentlyEditing::Rest => self.decrement_rest_duration(5),
+                    CurrentlyEditing::Cycles => self.decrement_cycles(1),
+                    _ => {}
+                }
+            }
+            KeyCode::Enter => self.handle_enter_on_new_config(),
             _ => {}
         }
     }
@@ -78,6 +97,21 @@ impl App {
                 self.menu.update_state(self.pomodoro.timer_active);
                 self.menu.select(1);
             }
+            _ => {}
+        }
+    }
+
+    fn handle_enter_on_new_config(&mut self) {
+        match self.new_config_currently_editing {
+            CurrentlyEditing::Work => self.new_config_currently_editing = CurrentlyEditing::Rest,
+            CurrentlyEditing::Rest => self.new_config_currently_editing = CurrentlyEditing::Cycles,
+            CurrentlyEditing::Cycles => {
+                self.config = self.new_config_buffer;
+                self.save_new_config();
+                self.new_config_buffer = None;
+                self.new_config_currently_editing = CurrentlyEditing::NotEditing;
+                self.set_state(AppState::Menu);
+            },
             _ => {}
         }
     }
@@ -96,7 +130,11 @@ impl App {
                         self.pomodoro.load_config(config);
                     }
                 },
-                2 => self.set_state(AppState::NewConfig),
+                2 => {
+                    self.new_config_buffer = Some(Config::default());
+                    self.set_state(AppState::NewConfig);
+                    self.new_config_currently_editing = CurrentlyEditing::Work;
+                },
                 _ => {}
             }
         } else {
@@ -110,7 +148,11 @@ impl App {
                         self.pomodoro.load_config(config);
                     }
                 },
-                3 => self.set_state(AppState::NewConfig),
+                3 => {
+                    self.new_config_buffer = Some(Config::default());
+                    self.set_state(AppState::NewConfig);
+                    self.new_config_currently_editing = CurrentlyEditing::Work;
+                },
                 _ => {}
             }
         }

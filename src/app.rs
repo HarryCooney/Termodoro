@@ -9,6 +9,7 @@ use crate::menu::Menu;
 use crate::config::Config;
 use crate::config_menu::ConfigMenu;
 use crate::clock::Clock;
+use crate::new_config::CurrentlyEditing;
 use crate::animation::Animation;
 
 pub struct App {
@@ -21,6 +22,8 @@ pub struct App {
     pub clock: Clock,
     pub i: usize,
     pub animations: Vec<Animation>,
+    pub new_config_buffer: Option<Config>,
+    pub new_config_currently_editing: CurrentlyEditing
 }
 
 pub enum AppState {
@@ -36,13 +39,15 @@ impl App {
         Self {
             running: false,
             state: AppState::Menu,
-            config: Some(Config::default()),
+            config: None,
             pomodoro: Pomodoro::new(),
             menu: Menu::new(),
             config_menu: ConfigMenu::default(),
             clock: Clock::new(),
             i: 0,
-            animations: Animation::default_animations()
+            animations: Animation::default_animations(),
+            new_config_buffer: None,
+            new_config_currently_editing: CurrentlyEditing::NotEditing
         }
     }
     
@@ -80,6 +85,7 @@ impl App {
     fn clear_config(&mut self) {
         self.config = None;
     }
+
 
     fn confirm_menu_choice(&mut self) {
         match self.menu.selected() {

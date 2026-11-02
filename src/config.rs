@@ -31,9 +31,9 @@ impl Config {
 impl Default for Config {
     fn default() -> Config {
         Self {
-            work: Duration::new(60 * 50, 0),
-            rest: Duration::new(60 * 10, 0),
-            cycles: 3
+            work: Duration::new(0, 0),
+            rest: Duration::new(0, 0),
+            cycles: 0
         }
     }
 }
@@ -46,9 +46,14 @@ impl ToString for Config {
             work_string, rest_string, self.cycles)
     }
 }
-fn time_duration_to_string(time: &Duration) -> String {
+pub fn time_duration_to_string(time: &Duration) -> String {
     let time_as_secs = time.as_secs();
-    let minutes = time_as_secs / 60;
+    let hours = time_as_secs / 3600;
+    let minutes = (time_as_secs % 3600) / 60;
     let secs = time_as_secs % 60;
-    format!("{:02}:{:02}", minutes, secs)
+    if hours == 0 {
+        format!("{:02}:{:02}", minutes, secs)
+    } else {
+        format!("{:02}:{:02}:{:02}",hours, minutes, secs)
+    }
 }

@@ -73,6 +73,9 @@ impl ConfigMenu {
         self.list_state.select_next();
     }
     
+    pub fn add_config(&mut self, config: Config) {
+        self.configs.push(config);
+    }
 
     //TODO - Add a way to inform user if file saving has not taken place.
     //This may happen if the configs.json file can't be found
@@ -102,7 +105,7 @@ impl Default for ConfigMenu {
         let configs = vec![Config::new(Duration::new(4, 0), Duration::new(5, 0), 5).unwrap()];
 
         Self {
-            configs: configs,
+            configs,
             list_state: ListState::default()
         }
     }

@@ -9,6 +9,7 @@ mod config_menu;
 mod ui;
 mod key_events;
 mod icons;
+mod new_config;
 
 fn main() -> Result<()> {
     color_eyre::install()?;
